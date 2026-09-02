@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace FamilyTree.Api.Controllers;
 
 [ApiController] //says this class is an API Conntroller
-[Route("api/[controller]")] //says use the controller name to create the route this route becomes /api/health
+[Route("api/[controller]")] //says use the controller name to create the route this route becomes /api/health ASP.NET removes the controller suffix
 public class HealthController : ControllerBase
 {
     [HttpGet]
