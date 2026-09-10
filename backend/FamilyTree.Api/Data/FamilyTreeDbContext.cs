@@ -29,5 +29,27 @@ public class FamilyTreeDbContext : DbContext //FamilyTreeDbContext class inherit
             .WithMany()
             .HasForeignKey(r => r.RelatedMemberId)
             .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<FamilyMember>()
+            .Property(f => f.DateOfBirth)
+            .HasConversion(
+                date => date.HasValue
+                    ? date.Value.ToDateTime(TimeOnly.MinValue)
+                    : (DateTime?)null,
+                date => date.HasValue
+                    ? DateOnly.FromDateTime(date.Value)
+                    : (DateOnly?)null
+            );
+
+    modelBuilder.Entity<FamilyMember>()
+        .Property(f => f.DateOfDeath)
+        .HasConversion(
+            date => date.HasValue
+                ? date.Value.ToDateTime(TimeOnly.MinValue)
+                : (DateTime?)null,
+            date => date.HasValue
+                ? DateOnly.FromDateTime(date.Value)
+                : (DateOnly?)null
+        );
     }
 }
