@@ -15,4 +15,19 @@ public class FamilyTreeDbContext : DbContext //FamilyTreeDbContext class inherit
 
     public DbSet<FamilyRelationship> FamilyRelationships { get; set; }
     //tells EF Core about the collection of entities we want in our database.
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<FamilyRelationship>()
+            .HasOne(r => r.SubjectMember)
+            .WithMany()
+            .HasForeignKey(r => r.SubjectMemberId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<FamilyRelationship>()
+            .HasOne(r => r.RelatedMember)
+            .WithMany()
+            .HasForeignKey(r => r.RelatedMemberId)
+            .OnDelete(DeleteBehavior.Restrict);
+    }
 }

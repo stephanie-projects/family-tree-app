@@ -15,4 +15,8 @@ public class FamilyRelationship
     public DateOnly? EndDate { get; set; }
     
     public string? Notes { get; set; }
+    
+    public FamilyMember SubjectMember { get; set; } = null!;
+
+    public FamilyMember RelatedMember { get; set; } = null!;
 }
