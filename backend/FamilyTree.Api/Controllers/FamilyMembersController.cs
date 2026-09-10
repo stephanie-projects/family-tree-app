@@ -57,4 +57,51 @@ public class FamilyMembersController : ControllerBase
 
         return Ok(familyMembers);
     }
+
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateFamilyMember(
+        int id,
+        FamilyMember updatedFamilyMember)
+    {
+        //Checks if the id in the URL matches the id of the updated family member object.
+        var existingMember = await _context.FamilyMembers.FindAsync(id);
+
+        if (existingMember == null)
+        {
+            return NotFound();
+        }
+
+        existingMember.FirstName = updatedFamilyMember.FirstName;
+        existingMember.MiddleName = updatedFamilyMember.MiddleName;
+        existingMember.LastName = updatedFamilyMember.LastName;
+        existingMember.MaidenName = updatedFamilyMember.MaidenName;
+        existingMember.DateOfBirth = updatedFamilyMember.DateOfBirth;
+        existingMember.DateOfDeath = updatedFamilyMember.DateOfDeath;
+        existingMember.BirthPlace = updatedFamilyMember.BirthPlace;
+        existingMember.Gender = updatedFamilyMember.Gender;
+        existingMember.UpdatedDate = DateTime.UtcNow;
+
+        //Marks the existing family member entity as modified and saves the changes to the database
+        await _context.SaveChangesAsync();
+
+        return NoContent();
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteFamilyMember(int id)
+    {
+        var familyMember = await _context.FamilyMembers.FindAsync(id);
+
+        if (familyMember == null)
+        {
+            return NotFound();
+        }
+
+        //Removes the family member entity from the database and saves the changes
+        _context.FamilyMembers.Remove(familyMember);
+
+        await _context.SaveChangesAsync();
+
+        return NoContent();
+    }
 }
