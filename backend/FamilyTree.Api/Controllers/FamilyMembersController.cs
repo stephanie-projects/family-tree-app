@@ -2,6 +2,7 @@ using FamilyTree.Api.Data;
 using FamilyTree.Api.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using FamilyTree.Api.DTOs;
 
 namespace FamilyTree.Api.Controllers;
 
@@ -19,13 +20,25 @@ public class FamilyMembersController : ControllerBase
 
     [HttpPost]
     public async Task<ActionResult<FamilyMember>> CreateFamilyMember(
-        FamilyMember familyMember)
+        CreateFamilyMemberDTO dto)
     {
-        familyMember.CreatedDate = DateTime.UtcNow;
-        familyMember.UpdatedDate = DateTime.UtcNow;
+        //Creates a new FamilyMember entity based on the data from the CreateFamilyMemberDto and saves it to the database
+        var familyMember = new FamilyMember
+        {
+            FirstName = dto.FirstName,
+            MiddleName = dto.MiddleName,
+            LastName = dto.LastName,
+            MaidenName = dto.MaidenName,
+            DateOfBirth = dto.DateOfBirth,
+            DateOfDeath = dto.DateOfDeath,
+            BirthPlace = dto.BirthPlace,
+            Gender = dto.Gender,
+            CreatedDate = DateTime.UtcNow,
+            UpdatedDate = DateTime.UtcNow
+        };
 
-//Tracks the new family member entity and saves it to the database
         _context.FamilyMembers.Add(familyMember);
+
         await _context.SaveChangesAsync();
 
         return CreatedAtAction(
@@ -103,5 +116,5 @@ public class FamilyMembersController : ControllerBase
         await _context.SaveChangesAsync();
 
         return NoContent();
-    }
+    } 
 }
