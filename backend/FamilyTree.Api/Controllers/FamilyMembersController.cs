@@ -74,7 +74,7 @@ public class FamilyMembersController : ControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateFamilyMember(
         int id,
-        FamilyMember updatedFamilyMember)
+        UpdateFamilyMemberDTO updatedFamilyMember)
     {
         //Checks if the id in the URL matches the id of the updated family member object.
         var existingMember = await _context.FamilyMembers.FindAsync(id);
