@@ -19,7 +19,7 @@ public class FamilyMembersController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<FamilyMember>> CreateFamilyMember(
+    public async Task<ActionResult<FamilyMemberResponseDto>> CreateFamilyMember(
         CreateFamilyMemberDTO dto)
     {
         //Creates a new FamilyMember entity based on the data from the CreateFamilyMemberDto and saves it to the database
@@ -44,12 +44,12 @@ public class FamilyMembersController : ControllerBase
         return CreatedAtAction(
             nameof(GetFamilyMember),
             new { id = familyMember.Id },
-            familyMember
+            ToResponseDto(familyMember)
         );
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<FamilyMember>> GetFamilyMember(int id)
+    public async Task<ActionResult<FamilyMemberResponseDto>> GetFamilyMember(int id)
     {
         //Finds the family member with the specified id in the database
         var familyMember = await _context.FamilyMembers.FindAsync(id);
@@ -59,7 +59,7 @@ public class FamilyMembersController : ControllerBase
             return NotFound();
         }
 
-        return Ok(familyMember);
+        return Ok(ToResponseDto(familyMember));
     }
 
     [HttpGet]
@@ -68,13 +68,14 @@ public class FamilyMembersController : ControllerBase
         //Retrieves all family members from the database and returns them as a list
         var familyMembers = await _context.FamilyMembers.ToListAsync();
 
-        return Ok(familyMembers);
+        var response = familyMembers.Select(ToResponseDto).ToList();
+
+        return Ok(response);
     }
 
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateFamilyMember(
-        int id,
-        UpdateFamilyMemberDTO updatedFamilyMember)
+        int id, UpdateFamilyMemberDTO updatedFamilyMember)
     {
         //Checks if the id in the URL matches the id of the updated family member object.
         var existingMember = await _context.FamilyMembers.FindAsync(id);
@@ -117,4 +118,22 @@ public class FamilyMembersController : ControllerBase
 
         return NoContent();
     } 
+
+    private static FamilyMemberResponseDto ToResponseDto(FamilyMember familyMember)
+    {
+        return new FamilyMemberResponseDto
+        {
+            Id = familyMember.Id,
+            FirstName = familyMember.FirstName,
+            MiddleName = familyMember.MiddleName,
+            LastName = familyMember.LastName,
+            MaidenName = familyMember.MaidenName,
+            DateOfBirth = familyMember.DateOfBirth,
+            DateOfDeath = familyMember.DateOfDeath,
+            BirthPlace = familyMember.BirthPlace,
+            Gender = familyMember.Gender,
+            CreatedDate = familyMember.CreatedDate,
+            UpdatedDate = familyMember.UpdatedDate
+        };
+    }
 }
