@@ -20,7 +20,7 @@ public class FamilyRelationshipsController : ControllerBase
 
 
     [HttpPost]
-    public async Task<ActionResult<FamilyRelationship>> CreateFamilyRelationship(
+    public async Task<ActionResult<FamilyRelationshipResponseDto>> CreateFamilyRelationship(
         CreateFamilyRelationshipDto dto)
     {
         var subjectExists = await _context.FamilyMembers
@@ -49,6 +49,37 @@ public class FamilyRelationshipsController : ControllerBase
         _context.FamilyRelationships.Add(relationship);
         await _context.SaveChangesAsync();
 
-        return StatusCode(201, relationship); // Returns a 201 Created response with the created relationship
+        var response = new FamilyRelationshipResponseDto
+        {
+            Id = relationship.Id,
+            SubjectMemberId = relationship.SubjectMemberId,
+            RelatedMemberId = relationship.RelatedMemberId,
+            RelationshipType = relationship.RelationshipType
+        };
+
+        return StatusCode(201, response); // Returns a 201 Created response with the created relationship
     }
+
+    
+    [HttpGet("{id}")]
+    public async Task<ActionResult<FamilyRelationshipResponseDto>> GetFamilyRelationship(int id)
+    {
+        var relationship = await _context.FamilyRelationships.FindAsync(id);
+
+        if (relationship == null)
+        {
+            return NotFound();
+        }
+
+        var response = new FamilyRelationshipResponseDto
+        {
+            Id = relationship.Id,
+            SubjectMemberId = relationship.SubjectMemberId,
+            RelatedMemberId = relationship.RelatedMemberId,
+            RelationshipType = relationship.RelationshipType
+        };
+
+        return Ok(response);
+    }
+
 }
