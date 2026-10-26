@@ -82,4 +82,21 @@ public class FamilyRelationshipsController : ControllerBase
         return Ok(response);
     }
 
+    
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<FamilyRelationshipResponseDto>>> GetFamilyRelationships()
+    {
+        var relationships = await _context.FamilyRelationships
+            .Select(relationship => new FamilyRelationshipResponseDto
+            {
+                Id = relationship.Id,
+                SubjectMemberId = relationship.SubjectMemberId,
+                RelatedMemberId = relationship.RelatedMemberId,
+                RelationshipType = relationship.RelationshipType
+            })
+            .ToListAsync();
+
+        return Ok(relationships);
+    }
+
 }
