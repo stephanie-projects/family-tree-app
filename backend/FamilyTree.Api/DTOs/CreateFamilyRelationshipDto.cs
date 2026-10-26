@@ -5,10 +5,10 @@ namespace FamilyTree.Api.DTOs;
 
 public class CreateFamilyRelationshipDto
 {
-    [Required]
+    [Range(1, int.MaxValue)]
     public int SubjectMemberId { get; set; }
 
-    [Required]
+    [Range(1, int.MaxValue)]
     public int RelatedMemberId { get; set; }
 
     [Required]

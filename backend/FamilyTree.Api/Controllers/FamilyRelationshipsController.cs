@@ -39,6 +39,25 @@ public class FamilyRelationshipsController : ControllerBase
             return BadRequest("A family member cannot have a relationship with themselves.");
         }
 
+        
+        if (!Enum.IsDefined(typeof(RelationshipType), dto.RelationshipType))
+        {
+            return BadRequest("Invalid relationship type.");
+        }
+
+        //check if the relationship already exists
+        
+        var relationshipExists = await _context.FamilyRelationships
+            .AnyAsync(relationship =>
+                relationship.SubjectMemberId == dto.SubjectMemberId &&
+                relationship.RelatedMemberId == dto.RelatedMemberId &&
+                relationship.RelationshipType == dto.RelationshipType);
+
+        if (relationshipExists)
+        {
+            return BadRequest("This relationship already exists.");
+        }
+
         var relationship = new FamilyRelationship
         {
             SubjectMemberId = dto.SubjectMemberId,
